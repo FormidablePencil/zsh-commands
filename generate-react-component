@@ -1,5 +1,6 @@
 # react component generator
 rcs() {
+
 mkdir -p src/$1 && 
 touch src/$1/{index.scoped.sass,template.tsx,index.tsx}
 
@@ -7,48 +8,41 @@ words=()
 first="$(cut -d'-' -f1 <<<"$1")"
 second="$(cut -d'-' -f2 <<<"$1")"
 third="$(cut -d'-' -f3 <<<"$1")"
+fourth="$(cut -d'-' -f4 <<<"$1")"
 
 if [[ $second = $first ]] second=""
-if [[ $third = $second ]] third=""
-if [[ $fourth = $third ]] fourth=""
+if [[ $third = $second || $second = "" ]] third=""
+if [[ $fourth = $third || $third = "" ]] fourth=""
 
+camelCase="${(C)first}${(C)second}${(C)third}${(C)fourth}"
 
-echo "
-import React from 'react'
+echo "import React from 'react'
 import './index.scoped.sass'
 
 function template() {
   return (
     <div>
-
-      ${(C)first}${(C)second}${(C)third}${(C)fourth} worked!
-     
+      Hi from $1
     </div>
   )
 }
 
-export default template
-
-" > src/$1/template.tsx
+export default template" > src/$1/template.tsx
 
 
 
 
-echo "
-import template from './template'
+echo "import template from './template'
 
-function $1() {
+function $camelCase() {
 
   return template()
 }
 
-export default $1
-" > src/$1/index.tsx
+export default $camelCase" > src/$1/index.tsx
 
 
 GREEN="\033[1;32m"
-
-
 echo "$GREEN React \"$1\" component generated"
 }
 
